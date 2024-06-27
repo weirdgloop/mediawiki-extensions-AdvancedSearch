@@ -314,6 +314,12 @@ $( function () {
 		searchableNamespaces
 	) );
 
+	// update the visible URL to include the namespaces that were used in the search (T217445)
+	const explicitNamespaceURL = mw.config.get( 'advancedSearch.explicitNamespaceURL' );
+	if ( explicitNamespaceURL ) {
+		history.pushState(null, '', explicitNamespaceURL);
+	}
+
 	// remove old namespace selection item to avoid double ns parameters
 	$( '.mw-search-spinner, #mw-searchoptions' ).remove();
 

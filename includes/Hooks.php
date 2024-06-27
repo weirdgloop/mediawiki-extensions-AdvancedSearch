@@ -3,44 +3,34 @@
 namespace AdvancedSearch;
 
 use ExtensionRegistry;
-use MediaWiki\Config\Config;
 use MediaWiki\Hook\SpecialSearchResultsPrependHook;
 use MediaWiki\Html\Html;
 use MediaWiki\MediaWikiServices;
 use MediaWiki\Output\OutputPage;
 use MediaWiki\Preferences\Hook\GetPreferencesHook;
 use MediaWiki\Request\WebRequest;
-use MediaWiki\SpecialPage\Hook\SpecialPageBeforeExecuteHook;
-use MediaWiki\SpecialPage\SpecialPage;
 use MediaWiki\Specials\SpecialSearch;
 use MediaWiki\User\User;
 use MediaWiki\User\UserIdentity;
-use MessageLocalizer;
 
 /**
  * @license GPL-2.0-or-later
  */
 class Hooks implements
-	SpecialPageBeforeExecuteHook,
 	GetPreferencesHook,
 	SpecialSearchResultsPrependHook
 {
 
 	/**
-	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/SpecialPageBeforeExecute
+	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/SpecialSearchResultsPrepend
 	 *
-	 * @param SpecialPage $special
-	 * @param string|null $subpage
-	 * @return false|void false to abort the execution of the special page, "void" otherwise
+	 * @param SpecialSearch $specialSearch
+	 * @param OutputPage $output
+	 * @param string $term
 	 */
-	public function onSpecialPageBeforeExecute( $special, $subpage ) {
-		if ( $special->getName() !== 'Search' ) {
-			return;
-		}
-
+	public function onSpecialSearchResultsPrepend( $specialSearch, $output, $term ) {
 		$services = MediaWikiServices::getInstance();
-		$user = $special->getUser();
-		$outputPage = $special->getOutput();
+		$user = $specialSearch->getUser();
 
 		/**
 		 * If the user is logged in and has explicitly requested to disable the extension, don't load.
@@ -52,56 +42,53 @@ class Hooks implements
 			return;
 		}
 
-		/**
-		 * Ensure the current URL is specifying the namespaces which are to be used
-		 */
-		$redirect = self::redirectToNamespacedRequest( $special );
-		if ( $redirect !== null ) {
-			$outputPage->redirect( $redirect );
-			// Abort execution of the SpecialPage by returning false since we are redirecting
-			return false;
-		}
+		$output->addHTML(
+			Html::rawElement(
+				'div',
+				[ 'class' => 'mw-search-spinner' ],
+				Html::element( 'div', [ 'class' => 'mw-search-spinner-bounce' ] )
+			)
+		);
 
-		$outputPage->addModules( [
+		$output->addModules( [
 			'ext.advancedSearch.init',
 			'ext.advancedSearch.searchtoken',
 		] );
 
-		$outputPage->addModuleStyles( 'ext.advancedSearch.initialstyles' );
+		$output->addModuleStyles( 'ext.advancedSearch.initialstyles' );
 
-		$outputPage->addJsConfigVars( $this->getJsConfigVars(
-			$special->getContext(),
-			$special->getConfig(),
+		$output->addJsConfigVars( $this->getJsConfigVars(
+			$specialSearch,
 			ExtensionRegistry::getInstance(),
 			$services
 		) );
 	}
 
 	/**
-	 * @param MessageLocalizer $context
-	 * @param Config $config
+	 * @param SpecialSearch $specialSearch
 	 * @param ExtensionRegistry $extensionRegistry
 	 * @param MediaWikiServices $services
 	 * @return array
 	 */
 	private function getJsConfigVars(
-		MessageLocalizer $context,
-		Config $config,
+		SpecialSearch $specialSearch,
 		ExtensionRegistry $extensionRegistry,
 		MediaWikiServices $services
 	): array {
+		$config = $specialSearch->getConfig();
 		$vars = [
 			'advancedSearch.mimeTypes' =>
 				( new MimeTypeConfigurator( $services->getMimeAnalyzer() ) )->getMimeTypes(
 					$config->get( 'FileExtensions' )
 				),
-			'advancedSearch.tooltips' => ( new TooltipGenerator( $context ) )->generateTooltips(),
+			'advancedSearch.tooltips' => ( new TooltipGenerator( $specialSearch->getContext() ) )->generateTooltips(),
 			'advancedSearch.namespacePresets' => $config->get( 'AdvancedSearchNamespacePresets' ),
 			'advancedSearch.deepcategoryEnabled' => $config->get( 'AdvancedSearchDeepcatEnabled' ),
 			'advancedSearch.searchableNamespaces' =>
 				SearchableNamespaceListBuilder::getCuratedNamespaces(
 					$services->getSearchEngineConfig()->searchableNamespaces()
 				),
+			'advancedSearch.explicitNamespaceURL' => $this->getExplicitNamespaceURL( $specialSearch )
 		];
 
 		if ( $extensionRegistry->isLoaded( 'Translate' ) ) {
@@ -114,15 +101,18 @@ class Hooks implements
 	}
 
 	/**
-	 * If the request does not contain any namespaces, redirect to URL with user default namespaces
-	 * @param SpecialPage $special
-	 * @return string|null the URL to redirect to or null if not needed
+	 * If the request does not contain any namespaces, return a URL that
+	 * reflects the namespaces that were to construct the search results.
+	 * This is used with history.pushState to make consistent, shareable
+	 * search result URLs (T217445)
+	 * @param SpecialSearch $specialSearch
+	 * @return string|null the URL with explicit namespaces, or null if not needed
 	 */
-	private static function redirectToNamespacedRequest( SpecialPage $special ): ?string {
-		if ( !self::isNamespacedSearch( $special->getRequest() ) ) {
-			$namespacedSearchUrl = $special->getRequest()->getFullRequestURL();
+	private static function getExplicitNamespaceURL( SpecialSearch $specialSearch ): ?string {
+		if ( !self::isNamespacedSearch( $specialSearch->getRequest() ) ) {
+			$namespacedSearchUrl = $specialSearch->getRequest()->getFullRequestURL();
 			$queryParts = [];
-			foreach ( self::getDefaultNamespaces( $special->getUser() ) as $ns ) {
+			foreach ( self::getDefaultNamespaces( $specialSearch->getUser() ) as $ns ) {
 				$queryParts['ns' . $ns] = '1';
 			}
 			return wfAppendQuery( $namespacedSearchUrl, $queryParts );
@@ -157,23 +147,6 @@ class Hooks implements
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/SpecialSearchResultsPrepend
-	 *
-	 * @param SpecialSearch $specialSearch
-	 * @param OutputPage $output
-	 * @param string $term
-	 */
-	public function onSpecialSearchResultsPrepend( $specialSearch, $output, $term ) {
-		$output->addHTML(
-			Html::rawElement(
-				'div',
-				[ 'class' => 'mw-search-spinner' ],
-				Html::element( 'div', [ 'class' => 'mw-search-spinner-bounce' ] )
-			)
-		);
 	}
 
 	/**
