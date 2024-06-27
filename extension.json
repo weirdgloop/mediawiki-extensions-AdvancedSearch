@@ -64,7 +64,6 @@
 	},
 	"Hooks": {
 		"GetPreferences": "main",
-		"SpecialPageBeforeExecute": "main",
 		"SpecialSearchResultsPrepend": "main"
 	},
 	"MessagesDirs": {
