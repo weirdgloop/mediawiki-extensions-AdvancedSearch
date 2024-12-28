@@ -5,11 +5,13 @@
  *
  * @class
  * @extends OO.ui.FieldLayout
- * @constructor
  *
+ * @constructor
  * @param {SearchModel} store
  * @param {OO.ui.Widget} widget
  * @param {Object} config
+ * @param {Function} config.checkVisibility A callback that returns false when this element should
+ *  be hidden
  */
 const ImageDimensionLayout = function ( store, widget, config ) {
 	this.store = store;
@@ -17,7 +19,7 @@ const ImageDimensionLayout = function ( store, widget, config ) {
 
 	store.connect( this, { update: 'onStoreUpdate' } );
 
-	ImageDimensionLayout.parent.call( this, widget, config );
+	ImageDimensionLayout.super.call( this, widget, config );
 
 	// Set ARIA labels and description from the FieldLayout label and help text.
 	this.fieldWidget.operatorInput.dropdownWidget.$handle.attr( {

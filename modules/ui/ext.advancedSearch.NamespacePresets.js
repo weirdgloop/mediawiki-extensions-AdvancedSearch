@@ -2,9 +2,15 @@
 
 const { arrayConcatUnique, arrayContains } = require( '../ext.advancedSearch.util.js' );
 
+/**
+ * @param {NamespacePresetProviders} presetProvider
+ * @param {string[]} namespaceIDs
+ * @param {string} presetName
+ * @return {boolean}
+ */
 const validateNamespacePreset = function ( presetProvider, namespaceIDs, presetName ) {
 	if ( !presetProvider.namespaceIdsAreValid( namespaceIDs ) ) {
-		mw.log.warn( 'AdvancedSearch namespace preset "' + presetName + '" contains unknown namespace ID' );
+		mw.log.warn( 'AdvancedSearch namespace preset "' + presetName + '" contains unknown namespace id' );
 		return false;
 	}
 	if ( namespaceIDs.length === 0 ) {
@@ -15,19 +21,19 @@ const validateNamespacePreset = function ( presetProvider, namespaceIDs, presetN
 };
 
 /**
- * Prepare static namespace ID presets for improved performance during later processing
+ * Prepare static namespace id presets for improved performance during later processing
  *
- * @param {Object} presets
+ * @param {Object.<string,Object>} presets
  * @param {NamespacePresetProviders} presetProvider
- * @return {Object}
+ * @return {Object.<string,Object>}
  */
 const groomPresets = function ( presets, presetProvider ) {
 	const groomedPresets = {};
-	Object.keys( presets ).forEach( function ( key ) {
+	Object.keys( presets ).forEach( ( key ) => {
 		const presetConfig = presets[ key ],
 			preset = { label: presetConfig.label || key };
 
-		if ( !Object.prototype.hasOwnProperty.call( presetConfig, 'enabled' ) || presetConfig.enabled !== true ) {
+		if ( !presetConfig.enabled ) {
 			return;
 		}
 
@@ -59,42 +65,38 @@ const groomPresets = function ( presets, presetProvider ) {
 };
 
 /**
- * @param {Object} presets
+ * @param {Object.<string,Object>} presets
  * @return {Object}
  */
 const prepareOptions = function ( presets ) {
 	// eslint-disable-next-line no-jquery/no-map-util
-	return $.map( presets, function ( preset, id ) {
+	return $.map( presets, ( preset, id ) => {
 		// The following messages are used here:
 		// * advancedsearch-namespaces-preset-all
 		// * advancedsearch-namespaces-preset-default
 		// * advancedsearch-namespaces-preset-general-help
 		// * advancedsearch-namespaces-preset-discussion
-		return { data: id, label: mw.msg( preset.label ) };
+		const msg = mw.message( preset.label );
+		return { data: id, label: msg.exists() ? msg.text() : preset.label };
 	} );
 };
 
 /**
  * @class
  * @extends OO.ui.CheckboxMultiselectInputWidget
- * @constructor
  *
+ * @constructor
  * @param {SearchModel} store
  * @param {NamespacePresetProviders} presetProvider
  * @param {Object} config
+ * @param {Object.<string,Object>} [config.presets={}]
  */
 const NamespacePresets = function ( store, presetProvider, config ) {
-	config = $.extend( {
-		presets: {}
-	}, config );
-	config.presets = groomPresets( config.presets, presetProvider );
-
-	config.options = prepareOptions( config.presets );
 	this.store = store;
+	this.presets = groomPresets( config.presets || {}, presetProvider );
 
-	this.presets = config.presets;
-
-	NamespacePresets.parent.call( this, config );
+	config.options = prepareOptions( this.presets );
+	NamespacePresets.super.call( this, config );
 
 	// Using undocumented internals because this.on does not work, see https://phabricator.wikimedia.org/T168735
 	this.checkboxMultiselectWidget.on( 'change', this.updateStoreFromPresets, [], this );
@@ -106,9 +108,12 @@ const NamespacePresets = function ( store, presetProvider, config ) {
 
 OO.inheritClass( NamespacePresets, OO.ui.CheckboxMultiselectInputWidget );
 
+/**
+ * @param {OO.ui.CheckboxMultioptionWidget} newValue
+ */
 NamespacePresets.prototype.updateStoreFromPresets = function ( newValue ) {
 	const key = newValue.getData();
-	if ( newValue.selected ) {
+	if ( newValue.isSelected() ) {
 		this.store.setNamespaces( arrayConcatUnique(
 			this.presets[ key ].namespaces,
 			this.store.getNamespaces() )

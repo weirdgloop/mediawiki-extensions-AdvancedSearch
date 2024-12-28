@@ -3,14 +3,14 @@
 		"authors": [
 			"Aefgh39622",
 			"Bebiezaza",
+			"Ekminarin",
 			"Geonuch",
 			"Horus",
 			"Just Sayori",
+			"Kaoavi",
 			"NP-chaonay",
 			"Patsagorn Y.",
-			"กิ๊ฟ เลิกล่ะ สายแข็ง",
-			"Kaoavi",
-			"Ekminarin"
+			"กิ๊ฟ เลิกล่ะ สายแข็ง"
 		]
 	},
 	"advancedsearch-desc": "เข้าถึงความสามารถค้นหาขั้นสูงบน [[Special:Search]] ได้โดยง่าย",
@@ -34,6 +34,7 @@
 	"advancedsearch-field-fileh": "ความสูงของไฟล์ในหน่วยพิกเซล",
 	"advancedsearch-field-sort": "ลำดับการเรียง",
 	"advancedsearch-field-preview-sort": "เรียงลำดับตาม $1",
+	"advancedsearch-help-general-instruction": "คำแนะนำอย่างละเอียดสำหรับ$1",
 	"advancedsearch-help-plain": ";คำอธิบาย\n:ค้นหาคำต่อไปนี้ในชื่อเรื่องหรือข้อความ\n;โปรดระวังสิ่งดังต่อไปนี้\n:* สามารถใส่ได้หลายคำในช่องนี้\n:* จะไม่สนใจเครื่องหมายวรรคตอนและอักขระที่มิใช่ตัวอักษรเลข (ยกเว้นทวิภาคและจุลภาค)\n:* อาจมีผลลัพธ์ที่ไม่มีคำค้นของคุณตั้งแต่หนึ่งคำขึ้นไป\n:* ใช้ word stemming ตัวอย่างเช่น ถ้ากรอกคำว่า ''car'' การค้นหาจะพิจารณา ''cars'' ด้วย ทั้งนี้ แล้วแต่ภาษา\n;หน้าวิธีใช้\n:[https://www.mediawiki.org/wiki/Special:MyLanguage/Help:CirrusSearch#Full_text_search การค้นหาข้อความเต็ม]\n;การเทียบเท่ากันของไวยากรณ์ในการค้นหาแบบปกติ\n:<code>sesame street car</code>",
 	"advancedsearch-help-phrase": ";คำอธิบาย\n:ค้นหาลำดับอักขระที่จำเพาะ ไม่สนใจเครื่องหมายวรรคตอน\n;โปรดระวังสิ่งดังต่อไปนี้\n:(ใช้ได้เฉพาะเมื่อใช้เครื่องหมายอัญประกาศ ดูตัวอย่างด้านล่าง)\n:* แยกวลีค้นด้วยเครื่องหมายจุลภาคหรือช่องว่าง เช่น <code>\"good morning\"</code>, <code>\"hello friend!\"</code>\n:* จะไม่สนใจเครื่องหมายวรรคตอนและอักขระที่มิใช่ตัวอักษรเลข (ยกเว้นทวิภาคและจุลภาค)\n:* การค้นหาไม่ไวต่ออักษรใหญ่เล็ก\n:* ไม่ใช้ word stemming\n;หน้าวิธีใช้\n:[https://www.mediawiki.org/wiki/Special:MyLanguage/Help:CirrusSearch#Words.2C_phrases.2C_and_modifiers คำ วลีและตัวดัดแปร]\n;การเทียบเท่ากันของไวยากรณ์ในการค้นหาแบบปกติ\n:คำในเครื่องหมายอัญประกาศ ตัวอย่างเช่น <code>\"Begin at the beginning\"</code>",
 	"advancedsearch-help-or": ";คำอธิบาย\n:จะต้องมีคำค้นอย่างน้อยหนึ่งคำในหน้า\n;หน้าวิธีใช้\n:[https://www.mediawiki.org/wiki/Special:MyLanguage/Help:CirrusSearch#Words.2C_phrases.2C_and_modifiers คำ วลีและตัวดัดแปร]\n;การเทียบเท่ากันของไวยากรณ์ในการค้นหาแบบปกติ\n:กลุ่มคำที่มี <code>OR</code> อยู่ระหว่างกลาง ตัวอย่างเช่น <code>Laptop OR Notebook</code>",
@@ -74,6 +75,7 @@
 	"advancedsearch-sort-preview-create-timestamp-desc": "วันที่สร้าง",
 	"advancedsearch-namespaces-search-in": "ค้นหาใน:",
 	"advancedsearch-namespaces-remember": "จำการเลือกสำหรับการค้นหาในอนาคต",
+	"advancedsearch-namespaces-pane-preview-list": "ตัวกรองเนมสเปซที่ใช้งานอยู่ในปัจจุบัน",
 	"advancedsearch-namespaces-preset-all": "ทั้งหมด",
 	"advancedsearch-namespaces-preset-default": "ค่าเริ่มต้น",
 	"advancedsearch-namespaces-preset-general-help": "วิธีใช้ทั่วไป",
@@ -81,5 +83,5 @@
 	"advancedsearch-namespaces-placeholder": "เพิ่มเนมสเปซ…",
 	"prefs-advancedsearch": "การค้นหาขั้นสูง",
 	"advancedsearch-preference-help": "การค้นหาขั้นสูงเพิ่มแบบในหน้า \"พิเศษ:ค้นหา\" ซึ่งให้คุณสามารถค้นหาด้วยตัวเลือกพิเศษเพิ่มเติมได้แม้คุณไม่ทราบวากยสัมพันธ์ค้นหา และยังเปลี่ยนวิธีการเลือกเนมสเปซด้วย",
-	"advancedsearch-preference-disable": "ไม่แสดงอินเตอร์เฟซการค้นหาขั้นสูงในระหว่างการใช้ พิเศษ:ค้นหา"
+	"advancedsearch-preference-disable": "ไม่แสดงอินเทอร์เฟซการค้นหาขั้นสูงในระหว่างการใช้ พิเศษ:ค้นหา"
 }

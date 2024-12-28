@@ -3,10 +3,11 @@
 /**
  * @class
  * @extends OO.ui.DropdownInputWidget
- * @constructor
  *
+ * @constructor
  * @param {SearchModel} store
  * @param {Object} config
+ * @param {string} config.fieldId Field name
  */
 
 const StoreListener = function ( store, config ) {
@@ -14,7 +15,7 @@ const StoreListener = function ( store, config ) {
 	this.fieldId = config.fieldId;
 
 	store.connect( this, { update: 'onStoreUpdate' } );
-	StoreListener.parent.call( this, config );
+	StoreListener.super.call( this, config );
 	this.setValueFromStore();
 };
 

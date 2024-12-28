@@ -3,16 +3,16 @@
 /**
  * @class
  * @extends OO.ui.HiddenInputWidget
- * @constructor
  *
+ * @constructor
  * @param {SearchModel} store
  * @param {Object} config
- * @cfg {string} name
+ * @param {string} config.name
  */
 const FormState = function ( store, config ) {
 	this.store = store;
 	this.name = config.name;
-	FormState.parent.call( this, config );
+	FormState.super.call( this, config );
 
 	this.store.connect( this, { update: 'onStoreUpdate' } );
 

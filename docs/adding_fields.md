@@ -51,7 +51,7 @@ You can place the code for adding new fields in the [`common.js` page](https://w
 
 #### id
 
-A unique ID for the field.
+A unique name for the field.
 
 #### defaultValue
 
@@ -75,7 +75,7 @@ function ( val ) {
 }
 ```
 
-If you're getting strings as input, remember to trim the whitespace at the beginning and end of the value. Please think of all possible values that might come from yoir field. You might need to quote and/or escape the values coming from your field.
+If you're getting strings as input, remember to trim the whitespace at the beginning and end of the value. Please think of all possible values that might come from your field. You might need to quote and/or escape the values coming from your field.
 
 #### init
 

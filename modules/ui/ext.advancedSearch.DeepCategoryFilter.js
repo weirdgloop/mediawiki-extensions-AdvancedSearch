@@ -4,16 +4,16 @@ const MultiselectLookup = require( '../dm/ext.advancedSearch.MultiselectLookup.j
 
 /**
  * @class
- * @extends OO.ui.MultiselectLookup
- * @constructor
+ * @extends MultiselectLookup
  *
+ * @constructor
  * @param {SearchModel} store
  * @param {Object} config
  */
 const DeepCategoryFilter = function ( store, config ) {
 	this.store = store;
 
-	DeepCategoryFilter.parent.call( this, store, config );
+	DeepCategoryFilter.super.call( this, store, config );
 
 	this.$element.addClass( 'mw-advancedSearch-deepCategory' );
 

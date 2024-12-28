@@ -2,20 +2,24 @@
 
 namespace AdvancedSearch;
 
-use Config;
-use ExtensionRegistry;
-use Html;
+use MediaWiki\Config\Config;
 use MediaWiki\Hook\SpecialSearchResultsPrependHook;
-use MediaWiki\MediaWikiServices;
+use MediaWiki\Html\Html;
+use MediaWiki\Languages\LanguageNameUtils;
+use MediaWiki\Output\OutputPage;
 use MediaWiki\Preferences\Hook\GetPreferencesHook;
+use MediaWiki\Registration\ExtensionRegistry;
+use MediaWiki\Request\WebRequest;
+use MediaWiki\MediaWikiServices;
 use MediaWiki\SpecialPage\Hook\SpecialPageBeforeExecuteHook;
+use MediaWiki\SpecialPage\SpecialPage;
+use MediaWiki\Specials\SpecialSearch;
+use MediaWiki\User\Options\UserOptionsLookup;
+use MediaWiki\User\User;
 use MediaWiki\User\UserIdentity;
 use MessageLocalizer;
-use OutputPage;
-use SpecialPage;
-use SpecialSearch;
-use User;
-use WebRequest;
+use SearchEngineConfig;
+use Wikimedia\Mime\MimeAnalyzer;
 
 /**
  * @license GPL-2.0-or-later
@@ -24,6 +28,23 @@ class Hooks implements
 	GetPreferencesHook,
 	SpecialSearchResultsPrependHook
 {
+
+	private UserOptionsLookup $userOptionsLookup;
+	private LanguageNameUtils $languageNameUtils;
+	private SearchEngineConfig $searchEngineConfig;
+	private MimeAnalyzer $mimeAnalyzer;
+
+	public function __construct(
+		UserOptionsLookup $userOptionsLookup,
+		LanguageNameUtils $languageNameUtils,
+		SearchEngineConfig $searchEngineConfig,
+		MimeAnalyzer $mimeAnalyzer
+	) {
+		$this->userOptionsLookup = $userOptionsLookup;
+		$this->languageNameUtils = $languageNameUtils;
+		$this->searchEngineConfig = $searchEngineConfig;
+		$this->mimeAnalyzer = $mimeAnalyzer;
+	}
 
 	/**
 	 * @see https://www.mediawiki.org/wiki/Manual:Hooks/SpecialSearchResultsPrepend
@@ -41,7 +62,7 @@ class Hooks implements
 		 * Ensure namespaces are always part of search URLs
 		 */
 		if ( $user->isNamed() &&
-			$services->getUserOptionsLookup()->getBoolOption( $user, 'advancedsearch-disable' )
+			$this->userOptionsLookup->getBoolOption( $user, 'advancedsearch-disable' )
 		) {
 			return;
 		}
@@ -64,25 +85,22 @@ class Hooks implements
 		$output->addJsConfigVars( $this->getJsConfigVars(
 			$specialSearch,
 			ExtensionRegistry::getInstance(),
-			$services
 		) );
 	}
 
 	/**
 	 * @param SpecialSearch $specialSearch
 	 * @param ExtensionRegistry $extensionRegistry
-	 * @param MediaWikiServices $services
 	 * @return array
 	 */
 	private function getJsConfigVars(
 		SpecialSearch $specialSearch,
 		ExtensionRegistry $extensionRegistry,
-		MediaWikiServices $services
 	): array {
 		$config = $specialSearch->getConfig();
 		$vars = [
 			'advancedSearch.mimeTypes' =>
-				( new MimeTypeConfigurator( $services->getMimeAnalyzer() ) )->getMimeTypes(
+				( new MimeTypeConfigurator( $this->mimeAnalyzer ) )->getMimeTypes(
 					$config->get( 'FileExtensions' )
 				),
 			'advancedSearch.tooltips' => ( new TooltipGenerator( $specialSearch->getContext() ) )->generateTooltips(),
@@ -90,14 +108,14 @@ class Hooks implements
 			'advancedSearch.deepcategoryEnabled' => $config->get( 'AdvancedSearchDeepcatEnabled' ),
 			'advancedSearch.searchableNamespaces' =>
 				SearchableNamespaceListBuilder::getCuratedNamespaces(
-					$services->getSearchEngineConfig()->searchableNamespaces()
+					$this->searchEngineConfig->searchableNamespaces()
 				),
 			'advancedSearch.explicitNamespaceURL' => $this->getExplicitNamespaceURL( $specialSearch )
 		];
 
 		if ( $extensionRegistry->isLoaded( 'Translate' ) ) {
 			$vars += [ 'advancedSearch.languages' =>
-				$services->getLanguageNameUtils()->getLanguageNames()
+				$this->languageNameUtils->getLanguageNames()
 			];
 		}
 
@@ -130,7 +148,7 @@ class Hooks implements
 	 * @param UserIdentity $user The user to lookup default namespaces for
 	 * @return int[] List of namespaces to be searched by default
 	 */
-	public static function getDefaultNamespaces( UserIdentity $user ): array {
+	private static function getDefaultNamespaces( UserIdentity $user ): array {
 		$searchConfig = MediaWikiServices::getInstance()->getSearchEngineConfig();
 		return $searchConfig->userNamespaces( $user ) ?: $searchConfig->defaultNamespaces();
 	}
@@ -141,7 +159,7 @@ class Hooks implements
 	 * @return bool
 	 */
 	private static function isNamespacedSearch( WebRequest $request ): bool {
-		if ( $request->getRawVal( 'search', '' ) === '' ) {
+		if ( ( $request->getRawVal( 'search' ) ?? '' ) === '' ) {
 			return true;
 		}
 

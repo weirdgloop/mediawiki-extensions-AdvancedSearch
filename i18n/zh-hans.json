@@ -3,9 +3,11 @@
 		"authors": [
 			"A Chinese Wikipedian",
 			"A2093064",
+			"Diskdance",
 			"Func",
 			"Hmgrmb",
 			"LNDDYL",
+			"LittlePaw365",
 			"Liuxinyu970226",
 			"NeverBehave",
 			"Ps2049",
@@ -18,9 +20,7 @@
 			"佛壁灯",
 			"列维劳德",
 			"夢蝶葬花",
-			"沈澄心",
-			"LittlePaw365",
-			"Diskdance"
+			"沈澄心"
 		]
 	},
 	"advancedsearch-desc": "在[[Special:Search]]上轻松访问高级搜索功能",
@@ -44,6 +44,7 @@
 	"advancedsearch-field-fileh": "文件高度（像素）",
 	"advancedsearch-field-sort": "排序顺序",
 	"advancedsearch-field-preview-sort": "按$1排序",
+	"advancedsearch-help-general-instruction": "“$1”的详细使用说明",
 	"advancedsearch-help-plain": ";描述\n:在标题或文本中搜索这些词。\n;请注意以下说明\n:* 此处可以输入多个字词。\n:* 标点符号及其他非字母数字字符（除了冒号和逗号）将会忽略。\n:* 可能有些结果不包含您输入的一个或多个搜索词。\n:* 字词填充会被应用。例如：如果输入“car”的话，搜索也将考虑“cars”。字词填充依语言而定。\n;帮助页面\n:[https://www.mediawiki.org/wiki/Special:MyLanguage/Help:CirrusSearch#Full_text_search 全文搜索]\n;正常搜索中的等效语法\n:<code>芝麻街 车</code>",
 	"advancedsearch-help-phrase": ";描述\n:搜索特定的字符序列。标点符号被忽略。\n;请注意以下说明\n:（只在使用引号时有效，参见下方例子）\n:* 使用英文逗号或空格分隔搜索字词，例如<code>\"good morning\"</code>, <code>\"hello friend\"</code>。\n:* 标点符号及其他非字母数字字符（除了冒号和逗号）将会忽略。\n:* 搜索大小写不敏感。\n:* 字词填充不会应用。\n;帮助页面\n:[https://www.mediawiki.org/wiki/Special:MyLanguage/Help:CirrusSearch#Words.2C_phrases.2C_and_modifiers 字词与修改]\n;正常搜索中的等效语法\n:引号中的词，例如<code>\"从头开始\"</code>。",
 	"advancedsearch-help-or": ";描述\n:页面内需包括至少一个搜索词。\n;帮助页面\n:[https://www.mediawiki.org/wiki/Special:MyLanguage/Help:CirrusSearch#Words.2C_phrases.2C_and_modifiers 词、短语、修饰符]\n;普通搜索内的等效语法\n:在两个词之间添加<code>OR</code>，例如<code>Laptop OR Notebook</code>。",
@@ -86,6 +87,7 @@
 	"advancedsearch-sort-preview-create-timestamp-desc": "创建日期",
 	"advancedsearch-namespaces-search-in": "搜索：",
 	"advancedsearch-namespaces-remember": "记住选择供未来搜索使用",
+	"advancedsearch-namespaces-pane-preview-list": "当前激活的命名空间筛选",
 	"advancedsearch-namespaces-preset-all": "全部",
 	"advancedsearch-namespaces-preset-default": "默认",
 	"advancedsearch-namespaces-preset-general-help": "常规帮助",

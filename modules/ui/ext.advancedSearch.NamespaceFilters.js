@@ -5,24 +5,18 @@ const MenuSelectWidget = require( './ext.advancedSearch.MenuSelectWidget.js' );
 /**
  * @class
  * @extends OO.ui.MenuTagMultiselectWidget
- * @constructor
  *
+ * @constructor
  * @param {SearchModel} store
  * @param {Object} config
- * @cfg {Object} [namespaces={}] Namespace id => Namespace label (similar to mw.config.get( 'wgFormattedNamespaces' ) )
+ * @param {Object} config.namespaces Namespace id => Namespace label (similar to mw.config.get( 'wgFormattedNamespaces' ) )
  */
 const NamespaceFilters = function ( store, config ) {
-	config = $.extend( {
-		namespaces: {},
-		options: [],
-		classes: []
-	}, config );
-
 	this.store = store;
 	this.namespaces = this.prettifyNamespaces( config.namespaces );
-	config.classes.push( 'mw-advancedSearch-namespaceFilter' );
 
-	NamespaceFilters.parent.call( this, $.extend( true, {
+	NamespaceFilters.super.call( this, $.extend( true, {
+		classes: [ 'mw-advancedSearch-namespaceFilter' ],
 		inputPosition: 'outline',
 		allowArbitrary: false,
 		allowDisplayInvalidTags: false,
@@ -41,7 +35,6 @@ const NamespaceFilters = function ( store, config ) {
 	this.$namespaceContainer = $( '<span>' ).addClass( 'mw-advancedSearch-namespaceContainer' );
 	this.$element.append( this.$namespaceContainer );
 
-	this.store = store;
 	this.store.connect( this, { update: 'onStoreUpdate' } );
 	this.setValueFromStore();
 	this.updateNamespaceFormFields();
@@ -61,8 +54,8 @@ OO.inheritClass( NamespaceFilters, OO.ui.MenuTagMultiselectWidget );
  * @return {Object} namespaces
  */
 NamespaceFilters.prototype.prettifyNamespaces = function ( namespaces ) {
-	Object.keys( namespaces ).forEach( function ( id ) {
-		namespaces[ id ] = mw.Title.newFromText( namespaces[ id ] ).getMainText();
+	Object.keys( namespaces ).forEach( ( id ) => {
+		namespaces[ id ] = mw.Title.newFromText( namespaces[ id ] || id ).getMainText();
 	} );
 	return namespaces;
 };
@@ -71,10 +64,7 @@ NamespaceFilters.prototype.prettifyNamespaces = function ( namespaces ) {
  * @inheritdoc
  */
 NamespaceFilters.prototype.createMenuWidget = function ( menuConfig ) {
-	return new MenuSelectWidget(
-		this.store,
-		menuConfig
-	);
+	return new MenuSelectWidget( menuConfig );
 };
 
 /**
@@ -97,7 +87,7 @@ NamespaceFilters.prototype.updateNamespaceFormFields = function () {
 	const self = this,
 		namespaces = this.store.getNamespaces();
 	this.$namespaceContainer.empty();
-	namespaces.forEach( function ( key ) {
+	namespaces.forEach( ( key ) => {
 		self.$namespaceContainer.append(
 			$( '<input>' ).attr( {
 				type: 'hidden',
@@ -114,7 +104,7 @@ NamespaceFilters.prototype.setValueFromStore = function () {
 	// prevent updating the store while reacting to its update notification
 	this.disconnect( this, { change: 'onValueUpdate' } );
 	this.clearItems();
-	namespaces.forEach( function ( key ) {
+	namespaces.forEach( ( key ) => {
 		self.addTag( key, self.namespaces[ key ] );
 	} );
 
@@ -147,7 +137,7 @@ NamespaceFilters.prototype.createTagItemWidget = function ( data, label ) {
 
 NamespaceFilters.prototype.highlightSelectedNamespacesInMenu = function () {
 	const self = this;
-	this.getMenu().getItems().forEach( function ( menuItem ) {
+	this.getMenu().getItems().forEach( ( menuItem ) => {
 		const isInTagList = !!self.findItemFromData( menuItem.getData() );
 		if ( isInTagList ) {
 			menuItem.checkboxWidget.setSelected( false );
@@ -159,15 +149,14 @@ NamespaceFilters.prototype.highlightSelectedNamespacesInMenu = function () {
 };
 
 NamespaceFilters.prototype.highlightLastSelectedTag = function ( menuItemData ) {
-	this.getItems().forEach( function ( tag ) {
-		if ( tag.getData() === menuItemData ) {
-			tag.$element.addClass( 'selected' );
-		}
-	} );
+	const tag = this.findItemFromData( menuItemData );
+	if ( tag ) {
+		tag.$element.addClass( 'selected' );
+	}
 };
 
 NamespaceFilters.prototype.removeHighlightFromTags = function () {
-	this.getItems().forEach( function ( tag ) {
+	this.getItems().forEach( ( tag ) => {
 		tag.$element.removeClass( 'selected' );
 	} );
 };
@@ -179,9 +168,7 @@ NamespaceFilters.prototype.removeHighlightFromTags = function () {
  * @return {string[]} collection of namespaces minus the removed item
  */
 NamespaceFilters.prototype.removeNamespaceTag = function ( namespace ) {
-	return this.store.getNamespaces().filter( function ( el ) {
-		return el !== namespace;
-	} );
+	return this.store.getNamespaces().filter( ( el ) => el !== namespace );
 };
 
 /**
@@ -193,7 +180,7 @@ NamespaceFilters.prototype.onMenuChoose = function ( menuItem ) {
 	if ( menuItem.checkboxWidget.isSelected() ) {
 		this.store.setNamespaces( this.removeNamespaceTag( menuItem.getData() ) );
 	} else {
-		NamespaceFilters.parent.prototype.onMenuChoose.call( this, menuItem, true );
+		NamespaceFilters.super.prototype.onMenuChoose.call( this, menuItem, true );
 		this.highlightLastSelectedTag( menuItem.getData() );
 		this.clearInput();
 	}
@@ -206,7 +193,7 @@ NamespaceFilters.prototype.onMenuChoose = function ( menuItem ) {
  * @param {boolean} isVisible Open state of the menu
  */
 NamespaceFilters.prototype.onMenuToggle = function ( isVisible ) {
-	NamespaceFilters.parent.prototype.onMenuToggle.call( this );
+	NamespaceFilters.super.prototype.onMenuToggle.call( this );
 	this.input.setIcon( isVisible ? 'search' : 'menu' );
 	if ( !isVisible ) {
 		this.removeHighlightFromTags();

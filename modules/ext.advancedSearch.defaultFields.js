@@ -94,7 +94,8 @@ const getOptionHelpMessage = function ( id ) {
 	// * advancedsearch-field-sort
 	// * advancedsearch-field-subpageof
 	const head = mw.msg( 'advancedsearch-field-' + id );
-	return new OO.ui.HtmlSnippet( '<h6 class="mw-advancedSearch-tooltip-head">' + head + '</h6>' + message );
+	return new OO.ui.HtmlSnippet( '<h6 class="mw-advancedSearch-tooltip-head">' + head + '</h6>' +
+		'<div class="mw-advancedSearch-tooltip-body">' + message + '</div>' );
 };
 
 /**
@@ -103,7 +104,7 @@ const getOptionHelpMessage = function ( id ) {
  * @return {OO.ui.FieldLayout}
  */
 const createDefaultLayout = function ( widget, id ) {
-	return new OO.ui.FieldLayout(
+	const $fieldLayout = new OO.ui.FieldLayout(
 		widget,
 		{
 			// Messages documented in getOptionHelpMessage
@@ -113,6 +114,14 @@ const createDefaultLayout = function ( widget, id ) {
 			$overlay: true
 		}
 	);
+
+	$fieldLayout.$help.find( 'a' )
+		.attr( 'aria-description',
+			mw.msg( 'advancedsearch-help-general-instruction',
+				mw.msg( 'advancedsearch-field-' + id ) )
+		);
+
+	return $fieldLayout;
 };
 
 /**
@@ -172,7 +181,7 @@ const addDefaultFields = function ( fieldCollection ) {
 			init: function ( state, config ) {
 				return new TextInput(
 					state,
-					$.extend( {}, config, { placeholder: mw.msg( 'advancedsearch-placeholder-exact-text' ) } )
+					Object.assign( {}, config, { placeholder: mw.msg( 'advancedsearch-placeholder-exact-text' ) } )
 				);
 			},
 			layout: createDefaultLayout
@@ -186,9 +195,7 @@ const addDefaultFields = function ( fieldCollection ) {
 			defaultValue: [],
 			formatter: function ( val ) {
 				if ( Array.isArray( val ) ) {
-					return val.map( function ( el ) {
-						return '-' + el;
-					} ).join( ' ' );
+					return val.map( ( el ) => '-' + el ).join( ' ' );
 				}
 				return '-' + val;
 			},
@@ -253,16 +260,14 @@ const addDefaultFields = function ( fieldCollection ) {
 			formatter: function ( val ) {
 				const keyword = mw.config.get( 'advancedSearch.deepcategoryEnabled' ) ? 'deepcat:' : 'incategory:';
 				if ( Array.isArray( val ) ) {
-					return val.map( function ( templateItem ) {
-						return keyword + optionalQuotes( templateItem );
-					} ).join( ' ' );
+					return val.map( ( templateItem ) => keyword + optionalQuotes( templateItem ) ).join( ' ' );
 				}
 				return keyword + optionalQuotes( val );
 			},
 			init: function ( state, config ) {
 				return new DeepCategoryFilter(
 					state,
-					$.extend( {}, config, { lookupId: 'category' } )
+					Object.assign( {}, config, { lookupId: 'category' } )
 				);
 			},
 			layout: createDefaultLayout
@@ -276,16 +281,14 @@ const addDefaultFields = function ( fieldCollection ) {
 			defaultValue: [],
 			formatter: function ( val ) {
 				if ( Array.isArray( val ) ) {
-					return val.map( function ( templateItem ) {
-						return 'hastemplate:' + optionalQuotes( templateItem );
-					} ).join( ' ' );
+					return val.map( ( templateItem ) => 'hastemplate:' + optionalQuotes( templateItem ) ).join( ' ' );
 				}
 				return 'hastemplate:' + optionalQuotes( val );
 			},
 			init: function ( state, config ) {
 				return new TemplateSearch(
 					state,
-					$.extend( {}, config, { lookupId: 'template' } )
+					Object.assign( {}, config, { lookupId: 'template' } )
 				);
 			},
 			customEventHandling: true,
@@ -304,7 +307,7 @@ const addDefaultFields = function ( fieldCollection ) {
 				return new LanguageSelection(
 					state,
 					new LanguageOptionProvider( mw.config.get( 'advancedSearch.languages' ) ),
-					$.extend( {}, config, { dropdown: { $overlay: true } } )
+					Object.assign( {}, config, { dropdown: { $overlay: true } } )
 				);
 			},
 			enabled: function () {
@@ -335,7 +338,7 @@ const addDefaultFields = function ( fieldCollection ) {
 				return new FileTypeSelection(
 					state,
 					new FileTypeOptionProvider( mw.config.get( 'advancedSearch.mimeTypes' ) ),
-					$.extend( {}, config, { dropdown: { $overlay: true } } )
+					Object.assign( {}, config, { dropdown: { $overlay: true } } )
 				);
 			},
 			layout: createDefaultLayout

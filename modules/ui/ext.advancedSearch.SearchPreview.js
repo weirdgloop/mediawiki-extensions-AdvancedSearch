@@ -8,6 +8,10 @@ const fieldIsImageDimension = function ( fieldId ) {
 	return /^file[hw]$/.test( fieldId );
 };
 
+/**
+ * @param {string} name
+ * @return {string}
+ */
 const lookupTranslationForSortMethod = function ( name ) {
 	// The following messages are used here:
 	// * advancedsearch-sort-preview-create-timestamp-asc
@@ -20,6 +24,10 @@ const lookupTranslationForSortMethod = function ( name ) {
 	return msg.exists() ? msg.text() : name;
 };
 
+/**
+ * @param {string} fieldId
+ * @return {string}
+ */
 const lookupTranslationForLabel = function ( fieldId ) {
 	// The following messages are used here:
 	// * advancedsearch-field-deepcategory
@@ -41,15 +49,15 @@ const lookupTranslationForLabel = function ( fieldId ) {
 /**
  * @class
  * @extends OO.ui.Widget
- * @constructor
  *
+ * @constructor
  * @param {SearchModel} store
  * @param {Object} config
- * @cfg {boolean} [data=true] If the set of preview pills should be visible
- * @cfg {string[]} [fieldNames=[]]
+ * @param {boolean} [config.data=true] If the set of preview pills should be visible
+ * @param {string[]} [config.fieldNames=[]]
  */
 const SearchPreview = function ( store, config ) {
-	config = $.extend( {
+	config = Object.assign( {
 		data: true
 	}, config );
 	this.store = store;
@@ -60,7 +68,7 @@ const SearchPreview = function ( store, config ) {
 
 	store.connect( this, { update: 'onStoreUpdate' } );
 
-	SearchPreview.parent.call( this, config );
+	SearchPreview.super.call( this, config );
 
 	this.$element
 		.addClass( 'mw-advancedSearch-searchPreview' )
@@ -85,13 +93,13 @@ SearchPreview.prototype.updatePreview = function () {
 		return;
 	}
 
-	this.fieldNames.forEach( function ( fieldId ) {
+	this.fieldNames.forEach( ( fieldId ) => {
 		const val = this.store.getField( fieldId );
 
 		if ( !this.skipFieldInPreview( fieldId, val ) ) {
 			this.$previewTagList.append( this.generateTag( fieldId, val ).$element );
 		}
-	}.bind( this ) );
+	} );
 
 	this.$previewTagList.append( this.generateTag( 'sort', this.store.getSortMethod() ).$element );
 };
@@ -196,11 +204,7 @@ SearchPreview.prototype.formatValue = function ( fieldId, value ) {
 	}
 
 	if ( Array.isArray( value ) ) {
-		return value.map( function ( v ) {
-			return String( v ).trim();
-		} ).filter( function ( v ) {
-			return v !== '';
-		} ).join( mw.msg( 'comma-separator' ) );
+		return value.map( ( v ) => String( v ).trim() ).filter( ( v ) => v !== '' ).join( mw.msg( 'comma-separator' ) );
 	}
 
 	return value.trim();

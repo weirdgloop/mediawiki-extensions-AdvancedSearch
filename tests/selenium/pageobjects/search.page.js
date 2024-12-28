@@ -74,9 +74,13 @@ class SearchPage extends Page {
 		this.searchImageHeight = new TextInputField( '#advancedSearchField-fileh' );
 	}
 
-	get FILE_NAMESPACE() { return '6'; }
+	get FILE_NAMESPACE() {
+		return '6';
+	}
 
-	get searchContainer() { return $( '.mw-advancedSearch-container' ); }
+	get searchContainer() {
+		return $( '.mw-advancedSearch-container' );
+	}
 
 	searchFileType() {
 		return {
@@ -91,15 +95,24 @@ class SearchPage extends Page {
 		};
 	}
 
-	get namespacesPreview() { return $( '.mw-advancedSearch-expandablePane-namespaces .mw-advancedSearch-expandablePane-button .oo-ui-indicator-down' ); }
-	get namespacesMenu() { return $( '.mw-advancedSearch-namespaceFilter .oo-ui-inputWidget-input' ); }
-	get namespaceOptionMain() { return $( '.mw-advancedSearch-namespace-0' ); }
+	get namespacesPreview() {
+		return $( '.mw-advancedSearch-expandablePane-namespaces .mw-advancedSearch-expandablePane-button .oo-ui-indicator-down' );
+	}
+
+	get namespacesMenu() {
+		return $( '.mw-advancedSearch-namespaceFilter .oo-ui-inputWidget-input' );
+	}
+
+	get namespaceOptionMain() {
+		return $( '.mw-advancedSearch-namespace-0' );
+	}
 
 	async expandNamespacesPreview() {
 		await this.namespacesPreview.waitForDisplayed();
 		await this.namespacesPreview.click();
 		await this.namespacesMenu.waitForDisplayed();
 	}
+
 	async expandNamespacesMenu() {
 		await this.namespacesMenu.waitForDisplayed();
 		await this.namespacesMenu.click();
@@ -129,24 +142,55 @@ class SearchPage extends Page {
 				await browser.keys( '\uE00C' ); // Close menu by hitting the Escape key
 				return labels;
 			},
-			getAllTagLabels: async () => {
-				return $$( '.mw-advancedSearch-namespaceFilter .oo-ui-tagMultiselectWidget-content div[class^="mw-advancedSearch-namespace-"]' ).map(
-					async ( el ) => await el.getText()
-				);
-			}
+			getAllTagLabels: async () => $$( '.mw-advancedSearch-namespaceFilter .oo-ui-tagMultiselectWidget-content div[class^="mw-advancedSearch-namespace-"]' ).map(
+				async ( el ) => await el.getText()
+			)
 		};
 	}
-	async getSearchPaginationLinks() { return $$( '.mw-search-pager-bottom a' ); }
-	get searchPreviewItems() { return $$( '.mw-advancedSearch-searchPreview .mw-advancedSearch-searchPreview-previewPill' ); }
-	get namespacePreviewItems() { return $( '.mw-advancedSearch-namespacesPreview .mw-advancedSearch-namespacesPreview-previewPill' ); }
-	get searchInfoIcon() { return $( '.mw-advancedSearch-container .oo-ui-fieldLayout .oo-ui-buttonElement-button' ); }
-	get searchButton() { return $( '#mw-search-top-table button' ); }
-	get allNamespacesPreset() { return $( '.mw-advancedSearch-namespace-selection input[value="all"]' ); }
-	get generalHelpPreset() { return $( '.mw-advancedSearch-namespace-selection input[value="generalHelp"]' ); }
-	get rememberSelection() { return $( '.mw-advancedSearch-namespace-selection input[name="nsRemember"]' ); }
-	get default() { return $( '.mw-advancedSearch-namespace-selection input[value="defaultNamespaces"]' ); }
-	get categorySuggestionsBox() { return $( '.mw-advancedSearch-deepCategory div[role="listbox"]' ); }
-	get templateSuggestionsBox() { return $( '.mw-advancedSearch-template div[role="listbox"]' ); }
+
+	async getSearchPaginationLinks() {
+		return $$( '.mw-search-pager-bottom a' );
+	}
+
+	get searchPreviewItems() {
+		return $$( '.mw-advancedSearch-searchPreview .mw-advancedSearch-searchPreview-previewPill' );
+	}
+
+	get namespacePreviewItems() {
+		return $( '.mw-advancedSearch-namespacesPreview .mw-advancedSearch-namespacesPreview-previewPill' );
+	}
+
+	get searchInfoIcon() {
+		return $( '.mw-advancedSearch-container .oo-ui-fieldLayout .oo-ui-buttonElement-button' );
+	}
+
+	get searchButton() {
+		return $( '#mw-search-top-table button' );
+	}
+
+	get allNamespacesPreset() {
+		return $( '.mw-advancedSearch-namespace-selection input[value="all"]' );
+	}
+
+	get generalHelpPreset() {
+		return $( '.mw-advancedSearch-namespace-selection input[value="generalHelp"]' );
+	}
+
+	get rememberSelection() {
+		return $( '.mw-advancedSearch-namespace-selection input[name="nsRemember"]' );
+	}
+
+	get default() {
+		return $( '.mw-advancedSearch-namespace-selection input[value="defaultNamespaces"]' );
+	}
+
+	get categorySuggestionsBox() {
+		return $( '.mw-advancedSearch-deepCategory div[role="listbox"]' );
+	}
+
+	get templateSuggestionsBox() {
+		return $( '.mw-advancedSearch-template div[role="listbox"]' );
+	}
 
 	async formWasSubmitted() {
 		return Object.prototype.hasOwnProperty.call( await this.getQueryFromUrl(), 'profile' );
@@ -161,7 +205,7 @@ class SearchPage extends Page {
 	}
 
 	async getQueryFromUrl() {
-		// eslint-disable-next-line node/no-deprecated-api
+		// eslint-disable-next-line n/no-deprecated-api
 		return url.parse( await browser.getUrl(), true ).query;
 	}
 
@@ -191,9 +235,7 @@ class SearchPage extends Page {
 
 	async assertPillLinkMarkedRed( $pillLink ) {
 		await $pillLink.waitForExist();
-		await browser.waitUntil( async () => {
-			return ( await $pillLink.getAttribute( 'class' ) ).includes( 'new' );
-		}, {
+		await browser.waitUntil( async () => ( await $pillLink.getAttribute( 'class' ) ).includes( 'new' ), {
 			timeOutMsg: 'Pill field marks non-existent titles in red'
 		} );
 	}
@@ -245,9 +287,7 @@ class SearchPage extends Page {
 					uiprop: 'options'
 				} );
 
-			let newSearchNamespaces = namespaceIds.map( ( nsId ) => {
-				return 'searchNs' + nsId + '=1';
-			} ).join( '|' );
+			let newSearchNamespaces = namespaceIds.map( ( nsId ) => 'searchNs' + nsId + '=1' ).join( '|' );
 
 			const userOptions = data.query.userinfo.options;
 			Object.keys( userOptions ).forEach( ( key ) => {

@@ -5,17 +5,18 @@ const CheckboxInputWidget = require( './ext.advancedSearch.CheckboxInputWidget.j
 /**
  * A menu option widget that shows the selection state with a checkbox.
  *
+ * @class
  * @extends OO.ui.MenuOptionWidget
  *
  * @constructor
  * @param {Object} config
- * @cfg {string} data
+ * @param {string} config.data Value associated with this item, usually the namespace id
  */
 const ItemMenuOptionWidget = function ( config ) {
 	const $label = $( '<div>' )
 		.addClass( 'mw-advancedSearch-ui-itemMenuOptionWidget-label' );
 
-	ItemMenuOptionWidget.parent.call( this, $.extend( {
+	ItemMenuOptionWidget.super.call( this, Object.assign( {
 		// Override the 'check' icon that OOUI defines
 		icon: ''
 	}, config ) );
@@ -51,6 +52,7 @@ const ItemMenuOptionWidget = function ( config ) {
 };
 
 OO.inheritClass( ItemMenuOptionWidget, OO.ui.MenuOptionWidget );
+
 // prevents a visual jump when selecting a menu option
 ItemMenuOptionWidget.static.scrollIntoViewOnSelect = false;
 

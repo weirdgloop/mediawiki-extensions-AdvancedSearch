@@ -4,16 +4,16 @@ const MultiselectLookup = require( '../dm/ext.advancedSearch.MultiselectLookup.j
 
 /**
  * @class
- * @extends OO.ui.TagMultiselectWidget
- * @constructor
+ * @extends MultiselectLookup
  *
+ * @constructor
  * @param {SearchModel} store
  * @param {Object} config
  */
 const TemplateSearch = function ( store, config ) {
 	this.store = store;
 
-	TemplateSearch.parent.call( this, store, config );
+	TemplateSearch.super.call( this, store, config );
 
 	this.$element.addClass( 'mw-advancedSearch-template' );
 

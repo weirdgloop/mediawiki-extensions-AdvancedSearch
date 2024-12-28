@@ -3,19 +3,19 @@
 /**
  * @class
  * @extends OO.ui.TextInputWidget
- * @constructor
  *
+ * @constructor
  * @param {SearchModel} store
  * @param {Object} config
+ * @param {string} config.fieldId Field name
  */
 const TextInput = function ( store, config ) {
-	config = $.extend( {}, config );
 	this.store = store;
 	this.fieldId = config.fieldId;
 
 	this.store.connect( this, { update: 'onStoreUpdate' } );
 
-	TextInput.parent.call( this, config );
+	TextInput.super.call( this, config );
 
 	this.populateFromStore();
 };

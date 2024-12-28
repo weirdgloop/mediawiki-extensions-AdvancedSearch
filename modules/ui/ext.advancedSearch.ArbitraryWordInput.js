@@ -3,23 +3,23 @@
 /**
  * @class
  * @extends OO.ui.TagMultiselectWidget
- * @constructor
  *
+ * @constructor
  * @param {SearchModel} store
  * @param {Object} config
+ * @param {string} config.fieldId Field name
+ * @param {string} [config.placeholder=""]
  */
 const ArbitraryWordInput = function ( store, config ) {
-	config = $.extend( {}, config );
-
 	this.store = store;
 	this.fieldId = config.fieldId;
 	this.placeholderText = config.placeholder || '';
 
 	this.store.connect( this, { update: 'onStoreUpdate' } );
 
-	ArbitraryWordInput.parent.call(
+	ArbitraryWordInput.super.call(
 		this,
-		$.extend( { allowArbitrary: true }, config )
+		Object.assign( { allowArbitrary: true }, config )
 	);
 
 	this.input.$input.on( 'input', this.buildTagsFromInput.bind( this ) );
@@ -30,9 +30,9 @@ const ArbitraryWordInput = function ( store, config ) {
 	}
 
 	// run initial size calculation after off-canvas construction (hidden parent node)
-	this.input.$input.on( 'visible', function () {
+	this.input.$input.on( 'visible', () => {
 		this.updateInputSize();
-	}.bind( this ) );
+	} );
 
 	this.populateFromStore();
 };
@@ -55,7 +55,7 @@ ArbitraryWordInput.prototype.buildTagsFromInput = function () {
 	if ( segments.length > 1 ) {
 		const self = this;
 
-		segments.forEach( function ( segment ) {
+		segments.forEach( ( segment ) => {
 			if ( self.isAllowedData( segment ) ) {
 				self.addTag( segment );
 			}
@@ -70,7 +70,7 @@ ArbitraryWordInput.prototype.buildTagsFromInput = function () {
  */
 ArbitraryWordInput.prototype.isAllowedData = function ( data ) {
 	return data.trim() &&
-		ArbitraryWordInput.parent.prototype.isAllowedData.call( this, data );
+		ArbitraryWordInput.super.prototype.isAllowedData.call( this, data );
 };
 
 ArbitraryWordInput.prototype.updatePlaceholder = function () {
@@ -79,6 +79,9 @@ ArbitraryWordInput.prototype.updatePlaceholder = function () {
 	this.input.$input.attr( 'placeholder', this.getTextForPlaceholder() );
 };
 
+/**
+ * @return {string}
+ */
 ArbitraryWordInput.prototype.getTextForPlaceholder = function () {
 	return this.getValue().length ? '' : this.placeholderText;
 };
@@ -88,7 +91,7 @@ ArbitraryWordInput.prototype.getTextForPlaceholder = function () {
  */
 ArbitraryWordInput.prototype.doInputEnter = function () {
 	return !this.input.getValue().trim() ||
-		ArbitraryWordInput.parent.prototype.doInputEnter.call( this );
+		ArbitraryWordInput.super.prototype.doInputEnter.call( this );
 };
 
 /**
@@ -98,7 +101,7 @@ ArbitraryWordInput.prototype.onInputBlur = function () {
 	if ( this.input.getValue().trim() ) {
 		this.addTagFromInput();
 	}
-	return ArbitraryWordInput.parent.prototype.onInputBlur.call( this );
+	return ArbitraryWordInput.super.prototype.onInputBlur.call( this );
 };
 
 module.exports = ArbitraryWordInput;

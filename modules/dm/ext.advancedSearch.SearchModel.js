@@ -11,8 +11,9 @@ const cloneReferenceTypeValue = function ( value ) {
 
 /**
  * @class
- * @constructor
  * @mixes OO.EventEmitter
+ *
+ * @constructor
  * @param {string[]} [defaultNamespaces=[]] The namespaces selected by default (for new searches)
  * @param {Object} [defaultFieldValues={}] Defaults for search field values
  */
@@ -72,8 +73,8 @@ SearchModel.prototype.storeField = function ( fieldId, value ) {
 		this.resetFileDimensionFields();
 	}
 
-	const namespaces = this.getNamespaces();
-	if ( fieldId === 'filetype' && namespaces.indexOf( SearchModel.FILE_NAMESPACE ) === -1 ) {
+	if ( fieldId === 'filetype' && !this.fileNamespaceIsSelected() ) {
+		const namespaces = this.getNamespaces();
 		namespaces.push( SearchModel.FILE_NAMESPACE );
 		this.setNamespaces( namespaces );
 	}
@@ -122,11 +123,11 @@ SearchModel.prototype.removeField = function ( fieldId ) {
  * @param {string} nsId
  */
 SearchModel.prototype.removeNamespace = function ( nsId ) {
-	const index = this.getNamespaces().indexOf( nsId );
+	const index = this.namespaces.indexOf( nsId );
 	if ( index !== -1 ) {
-		this.getNamespaces().splice( index, 1 );
+		this.namespaces.splice( index, 1 );
+		this.emitUpdate();
 	}
-	this.emitUpdate();
 };
 
 /**
@@ -215,7 +216,7 @@ SearchModel.prototype.fileTypeIsSelected = function () {
  * @return {boolean}
  */
 SearchModel.prototype.fileNamespaceIsSelected = function () {
-	return this.getNamespaces().indexOf( SearchModel.FILE_NAMESPACE ) === -1;
+	return this.namespaces.indexOf( SearchModel.FILE_NAMESPACE ) !== -1;
 };
 
 /**
@@ -230,16 +231,14 @@ SearchModel.prototype.getNamespaces = function () {
  * @return {string[]}
  */
 SearchModel.prototype.sortNamespacesByNumber = function ( namespaces ) {
-	return namespaces.sort( function ( a, b ) {
-		return Number( a ) - Number( b );
-	} );
+	return namespaces.sort( ( a, b ) => Number( a ) - Number( b ) );
 };
 
 /**
  * @param {string[]} namespaces
  */
 SearchModel.prototype.setNamespaces = function ( namespaces ) {
-	const previousNamespaces = this.namespaces.slice( 0 );
+	const previousNamespaces = this.namespaces.slice();
 
 	this.namespaces = this.sortNamespacesByNumber( namespaces );
 

@@ -2,8 +2,7 @@
 	"@metadata": {
 		"authors": [
 			"Akakiiri",
-			"Amoramah",
-			"Amire80"
+			"Amoramah"
 		]
 	},
 	"advancedsearch-desc": "Yɔ'ɔ naana bɔna adeŋɛ te'ele eere \"capabilities\" n boi [[Special:Search]]",
@@ -27,6 +26,7 @@
 	"advancedsearch-field-fileh": "Faali yaleŋa n de se'em pizɛl puan",
 	"advancedsearch-field-sort": "Gasega sɔa",
 	"advancedsearch-field-preview-sort": "$1 n gãsɛ",
+	"advancedsearch-help-general-instruction": "$1 garesɛ pa'alegɔ",
 	"advancedsearch-placeholder-exact-text": "\"deebia nɔŋɛ bua mɛ\"",
 	"advancedsearch-inlanguage-default": "Loe yeletɔgum",
 	"advancedsearch-filetype-section-types": "Faali mɛnka buuri",
@@ -56,6 +56,7 @@
 	"advancedsearch-sort-preview-create-timestamp-desc": "Maalegɔ dabeserɛ",
 	"advancedsearch-namespaces-search-in": "Ɛ doose:",
 	"advancedsearch-namespaces-remember": "Tɛra loore bo beere iya",
+	"advancedsearch-namespaces-pane-preview-list": "Nananawa wa kpeŋɛ yu'urɛ fole \"filters\"",
 	"advancedsearch-namespaces-preset-all": "Za'a",
 	"advancedsearch-namespaces-preset-default": "Naaŋen",
 	"advancedsearch-namespaces-preset-general-help": "Suŋerɛ za'a",

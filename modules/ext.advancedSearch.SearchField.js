@@ -3,12 +3,8 @@
 /**
  * Base class for search form fields
  *
- * @class SearchField
- * @param {string} id
- * @param {string|string[]} [defaultValue='']
- * @constructor
  * @abstract
- *
+ * @class
  * @property {string} id
  * @property {string|string[]} defaultValue
  * @property {Function} formatter A callback returning a string
@@ -16,22 +12,14 @@
  * @property {boolean} [customEventHandling]
  * @property {Function} [enabled] A callback returning a boolean
  * @property {Function} layout A callback returning a {@see OO.ui.FieldLayout}
+ *
+ * @constructor
+ * @param {string} id
+ * @param {string|string[]} [defaultValue='']
  */
 const SearchField = function ( id, defaultValue ) {
 	this.id = id;
 	this.defaultValue = defaultValue || '';
-};
-
-SearchField.prototype.createWidget = function ( state, config ) { // eslint-disable-line no-unused-vars
-	throw new Error( 'You must implement the createWidget function' );
-};
-
-SearchField.prototype.createLayout = function ( widget, config, state ) { // eslint-disable-line no-unused-vars
-	throw new Error( 'You must implement the createLayout function' );
-};
-
-SearchField.prototype.formatSearchValue = function ( value ) { // eslint-disable-line no-unused-vars
-	throw new Error( 'You must implement the formatSearchValue function' );
 };
 
 /**
@@ -54,7 +42,7 @@ const createSearchFieldFromObject = function ( obj ) {
 		SearchField.apply( this, arguments );
 	};
 	SearchFieldSubclass.prototype = Object.create( SearchField.prototype );
-	$.extend( SearchFieldSubclass.prototype, obj );
+	Object.assign( SearchFieldSubclass.prototype, obj );
 	return new SearchFieldSubclass( id, defaultValue );
 };
 

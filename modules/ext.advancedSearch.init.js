@@ -29,9 +29,7 @@ const {
  * @param {SearchModel} state
  */
 const forceFileTypeNamespaceWhenSearchForFileType = function ( $searchField, state ) {
-	if ( state.fileTypeIsSelected() &&
-		state.fileNamespaceIsSelected()
-	) {
+	if ( state.fileTypeIsSelected() && !state.fileNamespaceIsSelected() ) {
 		// Can't call state.setNamespaces with file namespace here,
 		// because this function is called inside the onSubmit event
 		// and the DOM update from the state change would take too long.
@@ -50,6 +48,9 @@ const forceFileTypeNamespaceWhenSearchForFileType = function ( $searchField, sta
  */
 const setSearchSubmitTrigger = function ( $search, $searchField, state, queryCompiler ) {
 	$search.on( 'submit', function () {
+		// T354107: This can actually trigger more than once; undo before we try again
+		$searchField.siblings( 'input[type=hidden]' ).remove();
+
 		const $form = $( this );
 		// Force a GET request when "Remember selection for future searches" isn't checked and
 		// no user setting will be written to the database.
@@ -59,7 +60,7 @@ const setSearchSubmitTrigger = function ( $search, $searchField, state, queryCom
 		forceFileTypeNamespaceWhenSearchForFileType( $searchField, state );
 		const compiledQuery = ( $searchField.val() + ' ' + queryCompiler.compileSearchQuery( state ) ).trim(),
 			$compiledSearchField = $( '<input>' ).prop( {
-				name: $searchField.prop( 'name' ),
+				name: 'search',
 				type: 'hidden'
 			} ).val( compiledQuery );
 		$searchField.prop( 'name', '' )
@@ -92,9 +93,7 @@ const updateSearchResultLinks = function ( currentState ) {
 	}
 
 	if ( extraParams ) {
-		$( '.mw-prevlink, .mw-nextlink, .mw-numlink' ).attr( 'href', function ( i, href ) {
-			return href + extraParams;
-		} );
+		$( '.mw-prevlink, .mw-nextlink, .mw-numlink' ).attr( 'href', ( i, href ) => href + extraParams );
 	}
 };
 
@@ -105,7 +104,18 @@ const createFieldConfiguration = function () {
 	const fields = new FieldCollection();
 	addDefaultFields( fields );
 	fields.freezeGroups( [ 'text', 'structure', 'files' ] );
+
+	/**
+	 * Fired after the default fields have been added to the {@see FieldCollection}. Hook handlers
+	 * can add additional fields and possibly modify existing ones. See docs/adding_fields.md for an
+	 * example.
+	 *
+	 * @event advancedSearch.configureFields
+	 * @param {FieldCollection} fields
+	 * @stable to use
+	 */
 	mw.hook( 'advancedSearch.configureFields' ).fire( fields );
+
 	return fields;
 };
 
@@ -129,14 +139,14 @@ const buildPaneElement = function ( state, fields, advancedOptionsBuilder ) {
 		tabIndex: 0,
 		suffix: 'options'
 	} );
-	pane.on( 'change', function ( open ) {
+	pane.on( 'change', ( open ) => {
 		searchPreview.togglePreview( !open );
 	} );
 
 	// Proactively lazy-load the pane: if the user hasn't already clicked to open the pane,
 	// build it in the background.
-	mw.requestIdleCallback( function () {
-		mw.loader.using( 'ext.advancedSearch.SearchFieldUI' ).then( function () {
+	mw.requestIdleCallback( () => {
+		mw.loader.using( 'ext.advancedSearch.SearchFieldUI' ).then( () => {
 			pane.buildDependentPane();
 		} );
 	} );
@@ -149,7 +159,7 @@ const buildPaneElement = function ( state, fields, advancedOptionsBuilder ) {
  * @param {jQuery} header
  * @param {NamespacePresets} presets
  * @param {NamespaceFilters} selection
- * @param {Object.<int,string>} searchableNamespaces Mapping namespace IDs to localized names
+ * @param {Object.<int,string>} searchableNamespaces Mapping namespace ids to localized names
  * @return {jQuery}
  */
 const buildNamespacesPaneElement = function ( state, header, presets, selection, searchableNamespaces ) {
@@ -166,7 +176,7 @@ const buildNamespacesPaneElement = function ( state, header, presets, selection,
 		tabIndex: 0,
 		suffix: 'namespaces'
 	} );
-	pane.on( 'change', function ( open ) {
+	pane.on( 'change', ( open ) => {
 		nsPreview.togglePreview( !open );
 	} );
 	pane.buildDependentPane();
@@ -174,7 +184,7 @@ const buildNamespacesPaneElement = function ( state, header, presets, selection,
 };
 
 /**
- * @param {Object.<int,string>} searchableNamespaces Mapping namespace IDs to localized names
+ * @param {Object.<int,string>} searchableNamespaces Mapping namespace ids to localized names
  * @return {string[]}
  */
 const getNamespacesFromUrl = function ( searchableNamespaces ) {
@@ -194,14 +204,14 @@ const getNamespacesFromUrl = function ( searchableNamespaces ) {
  * @return {Object} fieldId => default value pairs
  */
 const getDefaultsFromConfig = function ( fields ) {
-	return fields.reduce( function ( defaults, field ) {
+	return fields.reduce( ( defaults, field ) => {
 		defaults[ field.id ] = field.defaultValue;
 		return defaults;
 	}, {} );
 };
 
 /**
- * @param {Object.<int,string>} searchableNamespaces Mapping namespace IDs to localized names
+ * @param {Object.<int,string>} searchableNamespaces Mapping namespace ids to localized names
  * @param {FieldCollection} fieldCollection
  * @return {SearchModel}
  */
@@ -229,7 +239,7 @@ const initState = function ( searchableNamespaces, fieldCollection ) {
 	return state;
 };
 
-$( function () {
+$( () => {
 	const searchableNamespaces = mw.config.get( 'advancedSearch.searchableNamespaces' ),
 		fieldCollection = createFieldConfiguration(),
 		state = initState( searchableNamespaces, fieldCollection ),
@@ -312,7 +322,7 @@ $( function () {
 	$( '.mw-search-spinner, #mw-searchoptions' ).remove();
 
 	// TODO this is workaround to fix a toggle true event fired after the DOM is loaded
-	setTimeout( function () {
+	setTimeout( () => {
 		namespaceSelection.getMenu().toggle( false );
 	}, 0 );
 } );

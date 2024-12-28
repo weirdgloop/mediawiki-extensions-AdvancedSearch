@@ -3,25 +3,30 @@
 /**
  * @class
  * @extends OO.ui.Widget
- * @constructor
  *
+ * @constructor
  * @param {SearchModel} store
  * @param {Object} config
- * @cfg {boolean} [data=true] If the set of preview pills should be visible
- * @cfg {Object.<int,string>} namespacesLabels
+ * @param {boolean} [config.data=true] If the set of preview pills should be visible
+ * @param {Object.<int,string>} config.namespacesLabels
  */
 const NamespacesPreview = function ( store, config ) {
-	config = $.extend( {
+	config = Object.assign( {
 		data: true
 	}, config );
 	this.store = store;
 	this.namespacesLabels = config.namespacesLabels;
+	this.$previewTagList = $( '<ul>' )
+		.addClass( 'mw-advancedSearch-searchPreview-tagList' )
+		.attr( 'title', mw.msg( 'advancedsearch-namespaces-pane-preview-list' ) );
 
 	store.connect( this, { update: 'onStoreUpdate' } );
 
-	NamespacesPreview.parent.call( this, config );
+	NamespacesPreview.super.call( this, config );
 
-	this.$element.addClass( 'mw-advancedSearch-namespacesPreview' );
+	this.$element
+		.addClass( 'mw-advancedSearch-namespacesPreview' )
+		.append( this.$previewTagList );
 	this.updatePreview();
 };
 
@@ -36,15 +41,15 @@ NamespacesPreview.prototype.onStoreUpdate = function () {
  */
 NamespacesPreview.prototype.updatePreview = function () {
 	// TODO check if we really need to re-generate
-	this.$element.find( '.mw-advancedSearch-namespacesPreview-previewPill' ).remove();
+	this.$previewTagList.empty();
 	if ( !this.data ) {
 		return;
 	}
 
-	this.store.getNamespaces().forEach( function ( nsId ) {
+	this.store.getNamespaces().forEach( ( nsId ) => {
 		const val = this.namespacesLabels[ nsId ] || nsId;
-		this.$element.append( this.generateTag( nsId, val ).$element );
-	}.bind( this ) );
+		this.$previewTagList.append( this.generateTag( nsId, val ).$element );
+	} );
 };
 
 /**
@@ -56,6 +61,7 @@ NamespacesPreview.prototype.updatePreview = function () {
  */
 NamespacesPreview.prototype.generateTag = function ( nsId, value ) {
 	const tag = new OO.ui.TagItemWidget( {
+		$element: $( '<li>' ),
 		label: $( '<span>' ).text( value ),
 		draggable: false
 	} );
