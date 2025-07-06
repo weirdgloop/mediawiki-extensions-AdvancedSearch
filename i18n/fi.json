@@ -10,11 +10,13 @@
 			"Stryn",
 			"Valtlai",
 			"Valtlait",
-			"Yupik"
+			"Yupik",
+			"Samoasambia"
 		]
 	},
-	"advancedsearch-desc": "Helpottaa laajennettujen hakuominaisuuksien käyttöä sivulle [[Special:Search|Toiminnot:Haku]]",
-	"advancedsearch-options-pane-head": "Laajennettu haku:",
+	"advancedsearch-desc": "Helpottaa tarkempien hakuominaisuuksien käyttöä sivulla [[Special:Search|Toiminnot:Haku]]",
+	"advancedsearch-options-pane-head": "Tarkennettu haku:",
+	"advancedsearch-options-pane-preview-list": "Tällä hetkellä käytetyt hakusanat",
 	"advancedsearch-optgroup-text": "Hae sivun tekstistä",
 	"advancedsearch-optgroup-structure": "Rakenne",
 	"advancedsearch-optgroup-files": "Tiedostot ja kuvat",
@@ -80,7 +82,7 @@
 	"advancedsearch-namespaces-preset-general-help": "Yleinen apu",
 	"advancedsearch-namespaces-preset-discussion": "Keskustelu",
 	"advancedsearch-namespaces-placeholder": "Lisää nimiavaruuksia...",
-	"prefs-advancedsearch": "Laajennettu haku",
-	"advancedsearch-preference-help": "Laajennettu haku lisää lomakkeen sivulle Special:Search. Näin voit suorittaa erikoistuneita hakuja, vaikka et tietäisi mitään hakusyntaksista. Se myös muuttaa nimiavaruuksien valintatapaa.",
-	"advancedsearch-preference-disable": "Älä näytä laajennetun haun käyttöliittymää kun käytät Special:Search"
+	"prefs-advancedsearch": "Tarkennettu haku",
+	"advancedsearch-preference-help": "Tarkennettu haku lisää lomakkeen sivulle Toiminto:Haku. Voit suorittaa sillä erikoistuneita hakuja, vaikka et tietäisi mitään hakusyntaksista. Se myös muuttaa nimiavaruuksien valintatapaa.",
+	"advancedsearch-preference-disable": "Älä näytä tarkennetun haun käyttöliittymää hakutoimintoa käytettäessä"
 }

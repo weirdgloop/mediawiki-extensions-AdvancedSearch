@@ -7,7 +7,7 @@
 	"advancedsearch-options-pane-head": "Дыкат издөө:",
 	"advancedsearch-optgroup-text": "Барактын текстинен издөө",
 	"advancedsearch-optgroup-structure": "Түзүм",
-	"advancedsearch-optgroup-files": "Файлдар жана сүрөттөр",
+	"advancedsearch-optgroup-files": "Файлдар",
 	"advancedsearch-optgroup-sort": "Иреттөө тартиби",
 	"advancedsearch-field-plain": "Бул сөздөрдү",
 	"advancedsearch-field-phrase": "Дал ушул текстти",
@@ -17,6 +17,8 @@
 	"advancedsearch-field-deepcategory": "Бул категориялардагы барактарды",
 	"advancedsearch-field-hastemplate": "Бул калыптарды камтыган барактарды",
 	"advancedsearch-field-inlanguage": "Бул тилдеги барактарды",
+	"advancedsearch-field-filetype": "Файл форматы",
+	"advancedsearch-field-filew": "Файлдын туурасы пиксел менен",
 	"advancedsearch-field-sort": "Иреттөө тартиби",
 	"advancedsearch-field-preview-sort": "$1 боюнча иреттөө",
 	"advancedsearch-placeholder-exact-text": "«мышык текени жакшы көрөт»",
@@ -39,6 +41,7 @@
 	"advancedsearch-sort-preview-create-timestamp-desc": "Түзүлгөн датасы",
 	"advancedsearch-namespaces-search-in": "Төмөнкү аталыш мейкиндиктеринен издөө:",
 	"advancedsearch-namespaces-remember": "Мындан кийинки издөөлөрдө да колдонулсун",
+	"advancedsearch-namespaces-preset-default": "Демейки",
 	"advancedsearch-namespaces-placeholder": "Аталыш мейкиндиктерин кошуу...",
 	"prefs-advancedsearch": "Дыкат издөө"
 }
